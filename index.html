@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Streaming Reality Check</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal: #00a86b;
+      --teal-light: #e6f7f1;
+      --teal-border: #00a86b;
+      --gray-100: #f5f5f5;
+      --gray-200: #ebebeb;
+      --gray-300: #d4d4d4;
+      --gray-500: #737373;
+      --gray-700: #404040;
+      --gray-900: #171717;
+      --beige: #fdf8f0;
+      --beige-border: #e8dcc8;
+      --red: #e53e3e;
+      --green: #00a86b;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      color: var(--gray-900);
+      min-height: 100vh;
+      padding: 24px 16px 60px;
+    }
+
+    .app {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* ─── HEADER ─── */
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+      padding-top: 8px;
+    }
+    .header h1 {
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: var(--gray-900);
+      line-height: 1.1;
+    }
+    .header h1 span { color: var(--teal); }
+    .header p {
+      margin-top: 8px;
+      color: var(--gray-500);
+      font-size: 0.95rem;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.5;
+    }
+
+    /* ─── SECTIONS ─── */
+    .section {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      border: 1px solid var(--gray-200);
+    }
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gray-500);
+      margin-bottom: 12px;
+    }
+
+    /* ─── PLATFORM PILLS ─── */
+    .platform-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1.5px solid var(--gray-300);
+      background: #fff;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      color: var(--gray-700);
+      user-select: none;
+    }
+    .pill:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-light); }
+    .pill.active {
+      border-color: var(--teal-border);
+      background: var(--teal-light);
+      color: var(--teal);
+      font-weight: 600;
+    }
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.7;
+    }
+
+    /* ─── PAYOUT CARD ─── */
+    .payout-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .payout-left {}
+    .payout-rate {
+      font-size: 2.5rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--gray-900);
+      line-height: 1;
+      transition: all 0.2s ease;
+    }
+    .payout-label {
+      font-size: 0.8rem;
+      color: var(--gray-500);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    .payout-source {
+      font-size: 0.72rem;
+      color: var(--gray-500);
+      margin-top: 2px;
+    }
+    .payout-right {
+      text-align: right;
+    }
+    .payout-context {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+    }
+    .payout-cents {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--teal);
+      margin-top: 2px;
+    }
+
+    /* ─── ITEM GRID ─── */
+    .item-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 520px) {
+      .item-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 340px) {
+      .item-grid { grid-template-columns: 1fr; }
+    }
+    .item-card {
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      padding: 14px 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .item-card:hover {
+      border-color: var(--teal);
+      background: var(--teal-light);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,168,107,0.12);
+    }
+    .item-card.active {
+      border-color: var(--teal-border);
+      background: var(--teal-light);
+      box-shadow: 0 0 0 2px rgba(0,168,107,0.2);
+    }
+    .item-emoji { font-size: 1.6rem; line-height: 1; }
+    .item-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-top: 6px;
+      line-height: 1.3;
+    }
+    .item-price {
+      font-size: 0.78rem;
+      color: var(--gray-500);
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    /* ─── RESULTS ─── */
+    .results-section {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 28px 24px 20px;
+      margin-bottom: 16px;
+      border: 1px solid var(--gray-200);
+    }
+    .result-number {
+      font-size: clamp(2.8rem, 8vw, 4rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--gray-900);
+      line-height: 1;
+      transition: all 0.25s ease;
+    }
+    .result-number span { color: var(--teal); }
+    .result-subtext {
+      font-size: 0.95rem;
+      color: var(--gray-500);
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    /* ─── ROAST CARD ─── */
+    .roast-card {
+      background: var(--beige);
+      border: 1px solid var(--beige-border);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      margin-top: 20px;
+      position: relative;
+      min-height: 64px;
+    }
+    .roast-text {
+      font-style: italic;
+      font-size: 0.93rem;
+      color: #6b5a3e;
+      line-height: 1.6;
+      transition: opacity 0.3s ease;
+    }
+    .roast-text.fading { opacity: 0; }
+    .roast-attribution {
+      font-size: 0.72rem;
+      color: #9c8460;
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    /* ─── PROGRESS BAR ─── */
+    .progress-section { margin-top: 20px; }
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--gray-500);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    .progress-track {
+      height: 10px;
+      background: var(--gray-200);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal), #00c47e);
+      border-radius: 999px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      min-width: 4px;
+    }
+    .progress-bestworst {
+      margin-top: 8px;
+      font-size: 0.78rem;
+      color: var(--gray-500);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 16px;
+    }
+    .progress-bestworst .best { color: var(--teal); font-weight: 600; }
+    .progress-bestworst .worst { color: var(--red); font-weight: 600; }
+
+    /* ─── COMPARISON CARDS ─── */
+    .comparison-section {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      border: 1px solid var(--gray-200);
+    }
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+    @media (max-width: 480px) {
+      .comparison-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .comparison-card {
+      background: var(--gray-100);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      border: 1px solid var(--gray-200);
+    }
+    .comp-platform {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gray-500);
+    }
+    .comp-plays {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--gray-900);
+      margin-top: 2px;
+      letter-spacing: -0.02em;
+    }
+    .comp-delta {
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .comp-delta.better { color: var(--green); }
+    .comp-delta.worse { color: var(--red); }
+    .comp-delta.same { color: var(--gray-500); }
+
+    /* ─── BOTTOM SECTION ─── */
+    .bottom-section {
+      background: var(--gray-100);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      border: 1px solid var(--gray-200);
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .info-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1.5px solid var(--gray-300);
+      background: #fff;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .info-btn:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+      background: var(--teal-light);
+    }
+
+    /* ─── MODAL ─── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 100;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+    .modal-overlay.open { opacity: 1; visibility: visible; }
+    .modal {
+      background: #fff;
+      border-radius: var(--radius) var(--radius) 0 0;
+      padding: 32px 28px 40px;
+      max-width: 680px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      transform: translateY(40px);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-handle {
+      width: 40px;
+      height: 4px;
+      background: var(--gray-300);
+      border-radius: 999px;
+      margin: 0 auto 24px;
+    }
+    .modal h2 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--gray-900);
+      margin-bottom: 16px;
+    }
+    .modal p, .modal li {
+      font-size: 0.9rem;
+      color: var(--gray-700);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .modal ul { padding-left: 20px; }
+    .modal li { margin-bottom: 8px; }
+    .modal strong { color: var(--gray-900); font-weight: 600; }
+    .modal .teal { color: var(--teal); font-weight: 600; }
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gray-300);
+      background: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-500);
+      transition: all 0.15s;
+    }
+    .modal-close:hover { background: var(--gray-100); color: var(--gray-900); }
+    .modal-inner { position: relative; }
+
+    .platform-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.85rem;
+    }
+    .platform-table th {
+      text-align: left;
+      padding: 8px 12px;
+      background: var(--gray-100);
+      font-weight: 600;
+      color: var(--gray-700);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .platform-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--gray-200);
+      color: var(--gray-700);
+    }
+    .platform-table tr:last-child td { border-bottom: none; }
+    .platform-table .highlight { color: var(--teal); font-weight: 700; }
+
+    /* number flip animation */
+    @keyframes numFlip {
+      0% { transform: translateY(-8px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    .result-number.updated {
+      animation: numFlip 0.3s ease forwards;
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Streaming <span>Reality</span> Check</h1>
+    <p>How many plays does it take for an artist to afford everyday things? The math is bleak.</p>
+  </div>
+
+  <!-- PLATFORM SELECTOR -->
+  <div class="section">
+    <div class="section-label">Choose a streaming platform</div>
+    <div class="platform-pills" id="platformPills"></div>
+  </div>
+
+  <!-- PAYOUT CARD -->
+  <div class="section">
+    <div class="payout-card">
+      <div class="payout-left">
+        <div class="payout-rate" id="payoutRate">$0.0040</div>
+        <div class="payout-label">Per-stream payout (USD)</div>
+        <div class="payout-source" id="payoutSource">Spotify est. (2024)</div>
+      </div>
+      <div class="payout-right">
+        <div class="payout-context">For context</div>
+        <div class="payout-cents" id="payoutCents">That's 0.40¢ per play</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM PICKER -->
+  <div class="section">
+    <div class="section-label">Pick something to afford:</div>
+    <div class="item-grid" id="itemGrid"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-section">
+    <div class="result-number" id="resultNumber"><span id="playsCount">2,998</span> plays</div>
+    <div class="result-subtext" id="resultSubtext">to afford one Spotify subscription ($11.99) on Spotify</div>
+
+    <!-- ROAST -->
+    <div class="roast-card">
+      <div class="roast-text" id="roastText">"That's not a career—that's a rounding error on a label's quarterly report."</div>
+      <div class="roast-attribution">— Streaming Reality Check</div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-section">
+      <div class="progress-labels">
+        <span>0 plays</span>
+        <span id="progressWorstLabel">–</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+      </div>
+      <div class="progress-bestworst" id="progressBestWorst"></div>
+    </div>
+  </div>
+
+  <!-- CROSS-PLATFORM COMPARISON -->
+  <div class="comparison-section">
+    <div class="section-label">Same item on other platforms:</div>
+    <div class="comparison-grid" id="comparisonGrid"></div>
+  </div>
+
+  <!-- BOTTOM BUTTONS -->
+  <div class="bottom-section">
+    <button class="info-btn" onclick="openModal('how')">How does this work? ↗</button>
+    <button class="info-btn" onclick="openModal('what')">What can artists do? ↗</button>
+  </div>
+
+</div>
+
+<!-- MODAL: How does this work -->
+<div class="modal-overlay" id="modal-how" onclick="closeModalOnBg(event, 'how')">
+  <div class="modal">
+    <div class="modal-inner">
+      <div class="modal-handle"></div>
+      <button class="modal-close" onclick="closeModal('how')">✕</button>
+      <h2>How does this work?</h2>
+      <p>
+        This tool calculates how many streams an artist needs to earn enough money to buy everyday items,
+        based on the estimated per-stream royalty rate for each platform.
+      </p>
+      <p>
+        The formula is simple: <strong>Plays needed = Item price ÷ Per-stream rate</strong>.
+        The result is rounded up to the nearest whole play.
+      </p>
+      <p>Estimated per-stream royalty rates used (2024 figures):</p>
+      <table class="platform-table">
+        <thead>
+          <tr><th>Platform</th><th>Per Stream (USD)</th><th>Per 1,000 streams</th></tr>
+        </thead>
+        <tbody id="ratesTableBody"></tbody>
+      </table>
+      <p>
+        <strong>Important caveat:</strong> These are <em>estimates</em>. Actual payouts vary enormously
+        based on listener country, subscription tier, label agreements, distributor fees, and many other
+        factors. An artist signed to a major label typically keeps only a fraction of even these amounts.
+      </p>
+      <p>
+        Royalties are also split between rights holders — the sound recording owner (usually label or
+        distributor) and the songwriter/publisher. An independent artist keeping all rights receives
+        the most; a signed artist might receive 15–25% of the displayed rate.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: What can artists do -->
+<div class="modal-overlay" id="modal-what" onclick="closeModalOnBg(event, 'what')">
+  <div class="modal">
+    <div class="modal-inner">
+      <div class="modal-handle"></div>
+      <button class="modal-close" onclick="closeModal('what')">✕</button>
+      <h2>What can artists do?</h2>
+      <p>
+        Streaming is not a livable income for most independent artists. But there are strategies that help:
+      </p>
+      <ul>
+        <li>
+          <span class="teal">Stay independent.</span> Distributing via DistroKid, TuneCore, or CD Baby
+          means keeping a much larger share of royalties vs. signing to a label.
+        </li>
+        <li>
+          <span class="teal">Merchandise & direct sales.</span> A $25 t-shirt earns the equivalent of
+          ~6,250 Spotify streams. Selling direct to fans via Bandcamp cuts out the middlemen entirely.
+        </li>
+        <li>
+          <span class="teal">Live performances.</span> Even small venue shows can earn more in one night
+          than months of streaming. Ticket sales remain the most reliable artist income.
+        </li>
+        <li>
+          <span class="teal">Sync licensing.</span> Getting a song placed in a TV show, film, or
+          advertisement can pay hundreds or thousands of dollars — a one-time payment worth millions
+          of streams.
+        </li>
+        <li>
+          <span class="teal">Patreon / fan subscriptions.</span> A few hundred dedicated fans paying
+          $5–10/month can exceed what streaming pays entirely.
+        </li>
+        <li>
+          <span class="teal">Prioritize Tidal & Apple Music.</span> When possible, promote to listeners
+          on higher-paying platforms. Tidal pays ~3× what Spotify does per stream.
+        </li>
+        <li>
+          <span class="teal">Advocate for change.</span> Organizations like the Artist Rights Alliance
+          push for better streaming legislation and fairer royalty structures. Support them.
+        </li>
+      </ul>
+      <p>
+        The uncomfortable truth is that streaming economics primarily benefit platforms and major labels,
+        not the artists whose work makes it all possible. Knowing that is the first step.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ─── DATA ───────────────────────────────────────────────────────────────────
+
+  const PLATFORMS = [
+    { id: 'spotify',      name: 'Spotify',       rate: 0.004,   color: '#1DB954' },
+    { id: 'apple',        name: 'Apple Music',   rate: 0.01,    color: '#FC3C44' },
+    { id: 'amazon',       name: 'Amazon Music',  rate: 0.004,   color: '#FF9900' },
+    { id: 'youtube',      name: 'YouTube Music', rate: 0.002,   color: '#FF0000' },
+    { id: 'tidal',        name: 'Tidal',         rate: 0.0125,  color: '#000000' },
+    { id: 'deezer',       name: 'Deezer',        rate: 0.0064,  color: '#EF5466' },
+  ];
+
+  const ITEMS = [
+    { id: 'subway',    emoji: '🥖', name: '6-inch Oven Roasted Turkey', price: 7.99   },
+    { id: 'rent',      emoji: '🏠', name: 'Monthly rent (avg)',    price: 1900.00 },
+    { id: 'health',    emoji: '🏥', name: 'American health insurance (1 yr)', price: 7800.00 },
+    { id: 'spotify',   emoji: '🎵', name: 'Spotify subscription',  price: 11.99  },
+    { id: 'picks',     emoji: '🎸', name: 'Guitar picks (12-pack)', price: 5.99   },
+    { id: 'burrito',   emoji: '🌯', name: 'Chipotle burrito (no guac)', price: 10.70  },
+    { id: 'fancyfeast', emoji: '🐱', name: 'Fancy Feast Tender Chicken & Liver (1 tin, for your cat)', price: 1.09  },
+  ];
+
+  // Roast copy: keyed by item id, plus a fallback array
+  const ROASTS = {
+    subway: [
+      '"Congratulations. After thousands of plays, you can almost afford a sandwich. Almost."',
+      '"Six inches of bread. That\'s your cut. Well, that\'s aspirational at this point."',
+      '"Subway should honestly sponsor this page. They\'re the only ones making money off your music."',
+    ],
+    rent: [
+      '"At this rate, you\'ll afford rent by 2087. The landlord sends his regards."',
+      '"Monthly rent. Monthly. As in, you need this every 30 days. Best of luck."',
+      '"Some artists go viral with 10 million streams and still can\'t make rent. The math is working as intended."',
+    ],
+    health: [
+      '"One year of health insurance. Because nothing says \'pursue your passion\' like a medical bankruptcy."',
+      '"The average US musician has no health insurance. Now you know why."',
+      '"Get sick on tour and this number gets a lot more personal."',
+    ],
+    spotify: [
+      '"The cruel irony is not lost on anyone. Except possibly Spotify."',
+      '"You need this many plays on Spotify just to pay for Spotify. Let that sink in."',
+      '"Spotify\'s investors made $2.7 billion last year. You\'re still doing the math on a sandwich subscription."',
+    ],
+    picks: [
+      '"Thousands of plays for a pack of guitar picks. The very tool you used to record the song."',
+      '"$5.99. That\'s less than a latte and more dignity than you\'ll get from a record deal."',
+      '"At least when you lose the pick under the couch, you know exactly what it cost you."',
+    ],
+    burrito: [
+      '"No guac. Because guac is extra, and so is financial stability."',
+      '"A Chipotle burrito without guacamole. Even in your royalty fantasy, you\'re cutting corners."',
+      '"The guac would\'ve been $2 more. That\'s another 500 streams you don\'t have."',
+    ],
+    fancyfeast: [
+      '"You\'ve achieved enough streams to feed a cat. One meal. The cat is unimpressed."',
+      '"$1.09. That\'s the bar. That\'s where the bar is."',
+      '"The chicken and liver variety. Because at these rates, you\'re both surviving on whatever\'s available."',
+    ],
+  };
+
+  const FALLBACK_ROASTS = [
+    '"The numbers don\'t lie. The numbers are just unsettling."',
+    '"This is the music industry working exactly as designed."',
+    '"Art has value. The industry just hasn\'t gotten around to paying for it yet."',
+    '"Keep streaming. Someone is definitely benefiting. Just not the artist."',
+  ];
+
+  // ─── STATE ──────────────────────────────────────────────────────────────────
+
+  let selectedPlatform = 'spotify';
+  let selectedItem = 'spotify';
+  let roastIndex = 0;
+  let roastTimer = null;
+
+  // ─── HELPERS ────────────────────────────────────────────────────────────────
+
+  function playsNeeded(price, rate) {
+    return Math.ceil(price / rate);
+  }
+
+  function formatWithCommas(n) {
+    return n.toLocaleString('en-US');
+  }
+
+  function formatAbbreviated(n) {
+    if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    return n.toString();
+  }
+
+  function formatCents(rate) {
+    const cents = rate * 100;
+    if (cents < 1) return `That's ${cents.toFixed(2)}¢ per play`;
+    return `That's ${cents.toFixed(2)}¢ per play`;
+  }
+
+  function getPlatform(id) { return PLATFORMS.find(p => p.id === id); }
+  function getItem(id) { return ITEMS.find(i => i.id === id); }
+
+  function deltaBadge(currentPlays, otherPlays) {
+    const diff = otherPlays - currentPlays;
+    if (diff === 0) return { text: 'Same', cls: 'same' };
+    if (diff < 0) return { text: `${formatAbbreviated(Math.abs(diff))} fewer plays`, cls: 'better' };
+    return { text: `+${formatAbbreviated(diff)} more plays`, cls: 'worse' };
+  }
+
+  // ─── BUILD PLATFORM PILLS ───────────────────────────────────────────────────
+
+  function buildPills() {
+    const container = document.getElementById('platformPills');
+    container.innerHTML = '';
+    PLATFORMS.forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'pill' + (p.id === selectedPlatform ? ' active' : '');
+      btn.dataset.id = p.id;
+      btn.innerHTML = `<span class="pill-dot"></span>${p.name}`;
+      btn.addEventListener('click', () => selectPlatform(p.id));
+      container.appendChild(btn);
+    });
+  }
+
+  // ─── BUILD ITEM GRID ────────────────────────────────────────────────────────
+
+  function buildItemGrid() {
+    const container = document.getElementById('itemGrid');
+    container.innerHTML = '';
+    ITEMS.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'item-card' + (item.id === selectedItem ? ' active' : '');
+      card.dataset.id = item.id;
+      card.innerHTML = `
+        <div class="item-name">${item.name}</div>
+        <div class="item-price">$${item.price.toFixed(2)}</div>
+      `;
+      card.addEventListener('click', () => selectItem(item.id));
+      container.appendChild(card);
+    });
+  }
+
+  // ─── BUILD RATES TABLE (for modal) ──────────────────────────────────────────
+
+  function buildRatesTable() {
+    const tbody = document.getElementById('ratesTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    PLATFORMS.forEach(p => {
+      const tr = document.createElement('tr');
+      const per1k = (p.rate * 1000).toFixed(2);
+      tr.innerHTML = `
+        <td>${p.name}</td>
+        <td class="${p.id === selectedPlatform ? 'highlight' : ''}">$${p.rate.toFixed(4)}</td>
+        <td class="${p.id === selectedPlatform ? 'highlight' : ''}">$${per1k}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ─── UPDATE PAYOUT CARD ─────────────────────────────────────────────────────
+
+  function updatePayoutCard() {
+    const p = getPlatform(selectedPlatform);
+    document.getElementById('payoutRate').textContent = '$' + p.rate.toFixed(4);
+    document.getElementById('payoutSource').textContent = `${p.name} est. (2024)`;
+    document.getElementById('payoutCents').textContent = formatCents(p.rate);
+  }
+
+  // ─── UPDATE RESULTS ─────────────────────────────────────────────────────────
+
+  function updateResults() {
+    const platform = getPlatform(selectedPlatform);
+    const item = getItem(selectedItem);
+    const plays = playsNeeded(item.price, platform.rate);
+
+    // Number with animation
+    const numEl = document.getElementById('playsCount');
+    const numWrapper = document.getElementById('resultNumber');
+    numEl.textContent = formatWithCommas(plays);
+    numWrapper.classList.remove('updated');
+    void numWrapper.offsetWidth; // reflow
+    numWrapper.classList.add('updated');
+
+    // Subtext
+    document.getElementById('resultSubtext').textContent =
+      `to afford one ${item.name} ($${item.price.toFixed(2)}) on ${platform.name}`;
+
+    // Roast
+    updateRoast();
+
+    // Progress bar
+    updateProgress(plays);
+
+    // Comparison
+    updateComparison(plays);
+  }
+
+  // ─── ROAST ROTATION ─────────────────────────────────────────────────────────
+
+  function getRotatingRoast() {
+    const pool = ROASTS[selectedItem] || FALLBACK_ROASTS;
+    const text = pool[roastIndex % pool.length];
+    roastIndex++;
+    return text;
+  }
+
+  function updateRoast(animate = false) {
+    const el = document.getElementById('roastText');
+    if (animate) {
+      el.classList.add('fading');
+      setTimeout(() => {
+        el.textContent = getRotatingRoast();
+        el.classList.remove('fading');
+      }, 300);
+    } else {
+      roastIndex = 0;
+      el.textContent = getRotatingRoast();
+    }
+  }
+
+  function startRoastTimer() {
+    if (roastTimer) clearInterval(roastTimer);
+    roastTimer = setInterval(() => updateRoast(true), 10000);
+  }
+
+  // ─── PROGRESS BAR ───────────────────────────────────────────────────────────
+
+  function updateProgress(currentPlays) {
+    const item = getItem(selectedItem);
+
+    // Compute all plays
+    const allPlays = PLATFORMS.map(p => ({
+      platform: p,
+      plays: playsNeeded(item.price, p.rate),
+    }));
+
+    const worstPlays = Math.max(...allPlays.map(x => x.plays));
+    const bestEntry = allPlays.reduce((a, b) => a.plays < b.plays ? a : b);
+    const worstEntry = allPlays.reduce((a, b) => a.plays > b.plays ? a : b);
+
+    const pct = Math.min(100, (currentPlays / worstPlays) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressWorstLabel').textContent =
+      `${formatAbbreviated(worstPlays)} plays (worst)`;
+
+    document.getElementById('progressBestWorst').innerHTML = `
+      <span>Best case (<span class="best">${bestEntry.platform.name}</span>): ${formatWithCommas(bestEntry.plays)} plays</span>
+      <span>·</span>
+      <span>Worst case (<span class="worst">${worstEntry.platform.name}</span>): ${formatWithCommas(worstEntry.plays)} plays</span>
+    `;
+  }
+
+  // ─── COMPARISON CARDS ───────────────────────────────────────────────────────
+
+  function updateComparison(currentPlays) {
+    const item = getItem(selectedItem);
+    const container = document.getElementById('comparisonGrid');
+    container.innerHTML = '';
+
+    const others = PLATFORMS.filter(p => p.id !== selectedPlatform);
+    others.forEach(p => {
+      const plays = playsNeeded(item.price, p.rate);
+      const delta = deltaBadge(currentPlays, plays);
+      const card = document.createElement('div');
+      card.className = 'comparison-card';
+      card.innerHTML = `
+        <div class="comp-platform">${p.name}</div>
+        <div class="comp-plays">${formatAbbreviated(plays)}</div>
+        <div class="comp-delta ${delta.cls}">${delta.text}</div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  // ─── SELECTION HANDLERS ─────────────────────────────────────────────────────
+
+  function selectPlatform(id) {
+    if (id === selectedPlatform) return;
+    selectedPlatform = id;
+    roastIndex = 0;
+
+    // Update pill active states
+    document.querySelectorAll('.pill').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.id === id);
+    });
+
+    updatePayoutCard();
+    updateResults();
+    buildRatesTable();
+  }
+
+  function selectItem(id) {
+    if (id === selectedItem) return;
+    selectedItem = id;
+    roastIndex = 0;
+
+    // Update item card active states
+    document.querySelectorAll('.item-card').forEach(card => {
+      card.classList.toggle('active', card.dataset.id === id);
+    });
+
+    updateResults();
+  }
+
+  // ─── MODAL ──────────────────────────────────────────────────────────────────
+
+  function openModal(which) {
+    document.getElementById(`modal-${which}`).classList.add('open');
+    document.body.style.overflow = 'hidden';
+    buildRatesTable();
+  }
+
+  function closeModal(which) {
+    document.getElementById(`modal-${which}`).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeModalOnBg(e, which) {
+    if (e.target === document.getElementById(`modal-${which}`)) {
+      closeModal(which);
+    }
+  }
+
+  // Close modals on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeModal('how');
+      closeModal('what');
+    }
+  });
+
+  // ─── INIT ────────────────────────────────────────────────────────────────────
+
+  function init() {
+    buildPills();
+    buildItemGrid();
+    updatePayoutCard();
+    updateResults();
+    buildRatesTable();
+    startRoastTimer();
+  }
+
+  init();
+</script>
+</body>
+</html>
