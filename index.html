@@ -539,8 +539,8 @@
     <div class="comparison-grid" id="comparisonGrid"></div>
   </div>
 
-  <!-- BOTTOM BUTTONS -->
-  <div class="bottom-section">
+  <!-- BOTTOM BUTTONS (hidden) -->
+  <div class="bottom-section" style="display:none">
     <button class="info-btn" onclick="openModal('how')">How does this work? ↗</button>
     <button class="info-btn" onclick="openModal('what')">What can artists do? ↗</button>
   </div>
@@ -645,13 +645,16 @@
   ];
 
   const ITEMS = [
-    { id: 'subway',    emoji: '🥖', name: '6-inch Oven Roasted Turkey', price: 7.99   },
-    { id: 'rent',      emoji: '🏠', name: 'Monthly rent (avg)',    price: 1900.00 },
-    { id: 'health',    emoji: '🏥', name: 'American health insurance (1 yr)', price: 7800.00 },
-    { id: 'spotify',   emoji: '🎵', name: 'Spotify subscription',  price: 11.99  },
-    { id: 'picks',     emoji: '🎸', name: 'Guitar picks (12-pack)', price: 5.99   },
-    { id: 'burrito',   emoji: '🌯', name: 'Chipotle burrito (no guac)', price: 10.70  },
-    { id: 'fancyfeast', emoji: '🐱', name: 'Fancy Feast Tender Chicken & Liver (1 tin, for your cat)', price: 1.09  },
+    { id: 'fancyfeast', emoji: '🐱', name: 'Fancy Feast Tender Chicken & Liver (1 tin, for your cat, or your call)', price: 1.09   },
+    { id: 'picks',      emoji: '🎸', name: 'Guitar picks (12-pack)',                                   price: 5.99   },
+    { id: 'subway',     emoji: '🥖', name: '6-inch Oven Roasted Turkey',                               price: 7.99   },
+    { id: 'burrito',    emoji: '🌯', name: 'Chipotle burrito (no guac)',                               price: 10.70  },
+    { id: 'spotify',    emoji: '🎵', name: 'Spotify subscription',                                     price: 11.99  },
+    { id: 'wire',       emoji: '📀', name: 'The Wire: Season 4 on Blu-Ray (the best season)',          price: 24.99  },
+    { id: 'rent',       emoji: '🏠', name: 'Monthly rent (avg)',                                       price: 1900.00 },
+    { id: 'health',     emoji: '🏥', name: 'American health insurance (1 yr)',                         price: 7800.00 },
+    { id: 'mercedes',   emoji: '🚗', name: '1982 Mercedes-Benz 300D (needs vacuum pump)',              price: 8500.00 },
+    { id: 'horse',      emoji: '🐴', name: 'One horse (used)',                                         price: 10000.00 },
   ];
 
   // Roast copy: keyed by item id, plus a fallback array
@@ -690,6 +693,21 @@
       '"You\'ve achieved enough streams to feed a cat. One meal. The cat is unimpressed."',
       '"$1.09. That\'s the bar. That\'s where the bar is."',
       '"The chicken and liver variety. Because at these rates, you\'re both surviving on whatever\'s available."',
+    ],
+    wire: [
+      '"Omar\'s coming. And he\'s still making more money than you are from streaming."',
+      '"The best season of the best show. You\'ve earned it. You have not, financially, earned it."',
+      '"All the pieces matter. Except your streaming royalties, which do not."',
+    ],
+    mercedes: [
+      '"A 40-year-old diesel that needs a $300 part. This is your streaming income\'s ceiling."',
+      '"It runs on vegetable oil if you fix the pump. Much like your career, it requires constant intervention."',
+      '"The vacuum pump is the only thing standing between you and this car. That, and about 2 million streams."',
+    ],
+    horse: [
+      '"Used. As in, someone else already had dreams about this horse. They didn\'t pan out either."',
+      '"A horse requires feed, stabling, and vet care. So do musicians. Neither can afford the other."',
+      '"One horse (used). Condition unknown. Much like your streaming revenue."',
     ],
   };
 
